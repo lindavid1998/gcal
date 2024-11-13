@@ -22,27 +22,42 @@ const shiftDateTime = (datetime, minutes) => {
 Get start and end datetimes for an eventId
 */
 const getStartEnd = async (eventId) => {
-	const request = gapi.client.calendar.events.get({
-		calendarId: 'primary',
+  return new Promise((resolve, reject) => {
+    const request = gapi.client.calendar.events.get({
+      calendarId: 'primary',
+      eventId: eventId,
+    });
+
+    request.execute((resp) => {
+      if (resp.error) {
+        reject(resp.message);
+      } else {
+        start = resp.start.dateTime;
+        end = resp.end.dateTime;
+        resolve([start, end])
+      }
+    });
+  })
+};
+
+const patchEvent = async (eventId, eventPatch, calendarId = 'primary') => {
+	const request = gapi.client.calendar.events.patch({
+		calendarId: calendarId,
 		eventId: eventId,
+		resource: eventPatch,
 	});
 
-	let start;
-	let end;
-
-	await request.execute((resp) => {
-		if (resp.error) {
-			console.error(resp.message);
+	await request.execute((jsonResp) => {
+		if (jsonResp.error) {
+			console.error('Patch error: ', jsonResp.message);
 		} else {
-			start = resp.start.dateTime;
-			end = resp.end.dateTime;
+			console.log('Patched event');
 		}
 	});
-
-	return [start, end]
 };
 
 module.exports = {
   shiftDateTime,
-  getStartEnd
+  getStartEnd,
+  patchEvent
 }
