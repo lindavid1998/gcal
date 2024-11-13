@@ -80,8 +80,15 @@ const handleAuth = () => {
 		if (resp.error !== undefined) {
 			throw resp;
 		}
-		await listUpcomingEvents();
-		await insertEvent();
+		// await listUpcomingEvents();
+		// await insertEvent();
+
+		const eventIds = new Set([
+			'7pb9cn3l0q85c7t6mfifk2v0s6',
+			'6cl1a3bs2djfgf0d31ltu7b64k',
+		]);
+
+		await shiftEvents(eventIds, minutes = 30);
 	};
 
 	if (gapi.client.getToken() === null) {
@@ -173,6 +180,85 @@ const insertEvent = async () => {
 	});
 
 	await request.execute();
+};
+
+const patchEvent = async (eventId, eventPatch, calendarId = 'primary') => {
+	const request = gapi.client.calendar.events.patch({
+		calendarId: calendarId,
+		eventId: eventId,
+		resource: eventPatch,
+	});
+
+	await request.execute((jsonResp) => {
+		if (jsonResp.error) {
+			console.error('Patch error: ', jsonResp.message);
+		} else {
+			console.log('Patched event');
+		}
+	});
+};
+
+//     "start": {
+//         "dateTime": "2024-11-08T19:00:00-08:00",
+//         "timeZone": "America/Los_Angeles"
+//     },
+//     "end": {
+//         "dateTime": "2024-11-08T19:30:00-08:00",
+//         "timeZone": "America/Los_Angeles"
+
+const shiftEvents = async (eventIds, minutes) => {
+	for (const eventId of eventIds) {
+		const [start, end] = await getStartEnd(eventId);
+
+		// get new start and end datetimes
+		newStartDatetime = shiftDateTime(start, minutes);
+		newEndDatetime = end;
+
+		const eventPatch = {
+			start: {
+				dateTime: newStartDatetime,
+			},
+			end: {
+				dateTime: newEndDatetime,
+			},
+		};
+
+		patchEvent(eventId, eventPatch);
+	}
+};
+
+/*
+Get start and end datetimes for an eventId
+*/
+const getStartEnd = async (eventId) => {
+	const request = gapi.client.calendar.events.get({
+		calendarId: 'primary',
+		eventId: eventId,
+	});
+
+	let start;
+	let end;
+
+	await request.execute((resp) => {
+		if (resp.error) {
+			console.error(resp.message);
+		} else {
+			start = resp.start.dateTime;
+			end = resp.end.dateTime;
+		}
+	});
+
+	return [start, end]
+};
+
+/*
+Return a new datetime string that is shifted by minutes
+*/
+const shiftDateTime = (datetime, minutes) => {
+	// TODO
+	// add minutes to datetime
+	// return new datetime
+	return '2024-11-11T19:30:00-08:00';
 };
 
 /*
