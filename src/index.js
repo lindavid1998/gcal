@@ -82,14 +82,8 @@ const handleAuth = () => {
 		if (resp.error !== undefined) {
 			throw resp;
 		}
-
-		const eventIds = new Set([
-			'7pb9cn3l0q85c7t6mfifk2v0s6',
-			'6cl1a3bs2djfgf0d31ltu7b64k',
-		]);
-
-		const minutes = 30;
-		await shiftEvents(eventIds, minutes);
+		document.getElementById('signout_button').style.visibility = 'visible';
+		document.getElementById('move_button').style.visibility = 'visible';
 	};
 
 	if (gapi.client.getToken() === null) {
@@ -111,6 +105,21 @@ const handleSignout = () => {
 		google.accounts.oauth2.revoke(token.access_token);
 		gapi.client.setToken('');
 	}
+	document.getElementById('signout_button').style.visibility = 'hidden';
+	document.getElementById('move_button').style.visibility = 'visible';
+};
+
+const handleMove = async () => {
+	const token = gapi.client.getToken();
+	if (token !== null) {
+		const eventIds = new Set([
+			'7pb9cn3l0q85c7t6mfifk2v0s6',
+			'6cl1a3bs2djfgf0d31ltu7b64k',
+		]);
+
+		const minutes = 30;
+		await shiftEvents(eventIds, minutes);
+	}
 };
 
 /*
@@ -126,7 +135,7 @@ const shiftEvents = async (eventIds, minutes) => {
 
 			newStartDatetime = shiftDateTime(start, minutes);
 			newEndDatetime = shiftDateTime(end, minutes);
-	
+
 			const eventPatch = {
 				start: {
 					dateTime: newStartDatetime,
@@ -135,9 +144,8 @@ const shiftEvents = async (eventIds, minutes) => {
 					dateTime: newEndDatetime,
 				},
 			};
-	
+
 			patchEvent(eventId, eventPatch);
-			
 		} catch (error) {
 			console.error('Failed to retrieve start and end times:', error);
 		}
@@ -156,3 +164,5 @@ document
 document
 	.querySelector('#signout_button')
 	.addEventListener('click', handleSignout);
+
+document.querySelector('#move_button').addEventListener('click', handleMove);

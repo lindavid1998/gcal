@@ -2,3 +2,6 @@
 .env
 sandbox.js
 event.html
+example.js
+/extension/hello_extensions.png
+/dist
