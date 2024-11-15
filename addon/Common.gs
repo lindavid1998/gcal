@@ -10,6 +10,8 @@
  * manifest > Install add-on" to install it.
  */
 
+var userProperties = PropertiesService.getUserProperties();
+
 /**
  * Callback for rendering the homepage card.
  * @return {CardService.Card} The card to show to the user.
@@ -26,33 +28,16 @@ function onHomepage(e) {
 		message = 'Good night';
 	}
 	message += ' ' + e.hostApp;
-	return createCatCard(message, true);
+	return createTextCard(message);
 }
 
 /**
- * Creates a card with an image of a cat, overlayed with the text.
+ * Creates a card with plain text
  * @param {String} text The text to overlay on the image.
- * @param {Boolean} isHomepage True if the card created here is a homepage;
- *      false otherwise. Defaults to false.
  * @return {CardService.Card} The assembled card.
  */
-function createCatCard(text, isHomepage) {
-	// Explicitly set the value of isHomepage as false if null or undefined.
-	if (!isHomepage) {
-		isHomepage = false;
-	}
-
-	// Use the "Cat as a service" API to get the cat image. Add a "time" URL
-	// parameter to act as a cache buster.
-	var now = new Date();
-	// Replace forward slashes in the text, as they break the CataaS API.
-	var caption = text.replace(/\//g, ' ');
-	var imageUrl = Utilities.formatString(
-		'https://cataas.com/cat/says/%s?time=%s',
-		encodeURIComponent(caption),
-		now.getTime()
-	);
-	var image = CardService.newImage().setImageUrl(imageUrl).setAltText('Meow');
+function createTextCard(text) {
+	const textParagraph = CardService.newTextParagraph().setText(text);
 
 	// Create a footer to be shown at the bottom.
 	var footer = CardService.newFixedFooter().setPrimaryButton(
@@ -63,24 +48,29 @@ function createCatCard(text, isHomepage) {
 			)
 	);
 
+	// Add button to clear clicked event IDs
+	const clearAction = CardService.newAction().setFunctionName(
+		'clearClickedEventIds'
+	);
+	var clearBtn = CardService.newTextButton()
+		.setText('Clear clicked events')
+		.setOnClickAction(clearAction);
+
+	// Add button to move clicked event IDs
+	const moveAction =
+		CardService.newAction().setFunctionName('moveClickedEvents');
+	var moveBtn = CardService.newTextButton()
+		.setText('Move clicked events')
+		.setOnClickAction(moveAction);
+
 	// Assemble the widgets and return the card.
-	var section = CardService.newCardSection().addWidget(image);
+	var section = CardService.newCardSection()
+		.addWidget(textParagraph)
+		.addWidget(clearBtn)
+		.addWidget(moveBtn);
 	var card = CardService.newCardBuilder()
 		.addSection(section)
 		.setFixedFooter(footer);
-
-	if (!isHomepage) {
-		// Create the header shown when the card is minimized,
-		// but only when this card is a contextual card. Peek headers
-		// are never used by non-contexual cards like homepages.
-		var peekHeader = CardService.newCardHeader()
-			.setTitle('Contextual Cat')
-			.setImageUrl(
-				'https://www.gstatic.com/images/icons/material/system/1x/pets_black_48dp.png'
-			)
-			.setSubtitle(text);
-		card.setPeekCardHeader(peekHeader);
-	}
 
 	return card.build();
 }
