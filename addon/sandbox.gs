@@ -37,3 +37,13 @@ function listUpcomingEvents() {
 		console.log('Failed with error %s', err.message);
 	}
 }
+
+const { DateTime, Duration } = Luxon;
+
+function main() {
+	const now = DateTime.now();
+	console.log(now.toISO()); // ISO 8601 format
+
+	console.log(DateTime.fromISO('2017-05-15')); //=> May 15, 2017 at midnight
+	console.log(DateTime.fromISO('2017-05-15T08:30:00')); //=> May 15, 2017 at 8:30
+}
