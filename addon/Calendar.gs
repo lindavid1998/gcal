@@ -40,45 +40,30 @@ function clearClickedEventIds() {
 	userProperties.deleteProperty('clickedEventIds');
 }
 
-async function patchEvent(eventPatch, eventId, calendarId = 'primary') {
-	// TO DO
-	// const request = gapi.client.calendar.events.patch({
-	// 	calendarId: calendarId,
-	// 	eventId: eventId,
-	// 	resource: eventPatch,
-	// });
-
-	// await request.execute((jsonResp) => {
-	// 	if (jsonResp.error) {
-	// 		console.error('Patch error: ', jsonResp.message);
-	// 	} else {
-	// 		console.log('Patched event');
-	// 	}
-	// });
-}
-
 function moveClickedEvents() {
-	// TODO
-	// var eventIds = getClickedEventIds();
-	// for (const eventId of eventIds) {
-	// 	try {
-	// 		// const [start, end] = await getStartEnd(eventId);
+	const minutes = Number(userProperties.getProperty('minutesToShift'));
+	var eventIds = getClickedEventIds();
 
-	// 		// newStartDatetime = shiftDateTime(start, minutes);
-	// 		// newEndDatetime = shiftDateTime(end, minutes);
+	for (const eventId of eventIds) {
+		try {
+			const [start, end] = getStartEnd(eventId, CALENDAR_ID);
 
-	// 		const eventPatch = {
-	// 			start: {
-	// 				dateTime: '2024-11-07T16:30:00-08:00',
-	// 			},
-	// 			// end: {
-	// 			// 	dateTime: newEndDatetime,
-	// 			// },
-	// 		};
+			newStartDatetime = shiftDateTime(start, minutes);
+			newEndDatetime = shiftDateTime(end, minutes);
 
-	// 		patchEvent(eventId, eventPatch);
-	// 	} catch (error) {
-	// 		console.error('Failed to retrieve start and end times:', error);
-	// 	}
-	// }
+			const eventPatch = {
+				start: {
+					dateTime: newStartDatetime,
+				},
+				end: {
+					dateTime: newEndDatetime,
+				},
+			};
+
+			const response = Calendar.Events.patch(eventPatch, CALENDAR_ID, eventId);
+			console.log(response);
+		} catch (error) {
+			console.error(error);
+		}
+	}
 }

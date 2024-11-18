@@ -11,9 +11,11 @@
   },
   "exceptionLogging": "STACKDRIVER",
   "oauthScopes": [
+    "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.addons.execute",
-    "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/script.locale"
+    "https://www.google.com/calendar/feeds",
+    "https://www.googleapis.com/auth/script.locale",
+    "https://www.googleapis.com/auth/calendar.events"
   ],
   "runtimeVersion": "V8",
   "addOns": {

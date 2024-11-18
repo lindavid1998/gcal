@@ -10,7 +10,12 @@
  * manifest > Install add-on" to install it.
  */
 
+const { DateTime, Duration } = Luxon; // import the Luxon library
+
 var userProperties = PropertiesService.getUserProperties();
+userProperties.setProperty('minutesToShift', '30');
+
+const CALENDAR_ID = 'primary';
 
 /**
  * Callback for rendering the homepage card.
