@@ -5,12 +5,9 @@
  */
 function onCalendarEventOpen(e) {
 	var calendar = CalendarApp.getCalendarById(e.calendar.calendarId);
-	// The event metadata doesn't include the event's title, so using the
-	// calendar.readonly scope and fetching the event by it's ID.
-	// var event = calendar.getEventById(e.calendar.id);
 	addToClickedEventIds(e.calendar.id);
 
-	return createTextCard(userProperties.getProperty('clickedEventIds'));
+	return createEventsCard();
 }
 
 /**
@@ -48,15 +45,12 @@ function moveClickedEvents() {
 		try {
 			const [start, end] = getStartEnd(eventId, CALENDAR_ID);
 
-			newStartDatetime = shiftDateTime(start, minutes);
-			newEndDatetime = shiftDateTime(end, minutes);
-
 			const eventPatch = {
 				start: {
-					dateTime: newStartDatetime,
+					dateTime: shiftDateTime(start, minutes),
 				},
 				end: {
-					dateTime: newEndDatetime,
+					dateTime: shiftDateTime(end, minutes),
 				},
 			};
 
@@ -64,6 +58,12 @@ function moveClickedEvents() {
 			console.log(response);
 		} catch (error) {
 			console.error(error);
+			// return createStatusCard('Error', error);
 		}
 	}
+
+	clearClickedEventIds();
+
+	// show success message
+	// createStatusCard('Success', 'Events moved');
 }

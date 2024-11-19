@@ -25,7 +25,7 @@
       "useLocaleFromApp": true,
       "homepageTrigger": {
         "runFunction": "onHomepage",
-        "enabled": false
+        "enabled": true
       }
     },
     "calendar": {
