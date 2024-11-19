@@ -58,12 +58,15 @@ function moveClickedEvents() {
 			console.log(response);
 		} catch (error) {
 			console.error(error);
-			// return createStatusCard('Error', error);
+			const statusCard = createStatusCard(
+				`Error ${error.details.code}: ${error.details.message}`
+			);
+			return addCardToStack(statusCard);
 		}
 	}
 
 	clearClickedEventIds();
 
-	// show success message
-	// createStatusCard('Success', 'Events moved');
+	const statusCard = createStatusCard('Success');
+	return addCardToStack(statusCard);
 }

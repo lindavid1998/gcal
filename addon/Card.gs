@@ -1,17 +1,21 @@
-// /**
-//  *
-//  * @param {String} status
-//  * @returns {CardService.Card} The card to show to the user.
-//  */
-// function createStatusCard(status) {
-// 	const cardHeader = CardService.newCardHeader()
-// 		.setTitle('Status')
-// 		.setSubtitle(status);
+/**
+ *
+ * @param {String} status
+ * @returns {CardService.Card} The card to show to the user.
+ */
+function createStatusCard(status) {
+	const cardHeader = CardService.newCardHeader()
+		.setTitle('Status')
+		.setSubtitle(status);
 
-// 	var card = CardService.newCardBuilder().setHeader(cardHeader);
+	const footer = createFooter();
 
-// 	return card.build();
-// }
+	const card = CardService.newCardBuilder()
+		.setHeader(cardHeader)
+		.setFixedFooter(footer);
+
+	return card.build();
+}
 
 /**
  * Create a footer
@@ -43,18 +47,18 @@ function createEventsCard() {
 
 	const buttonSet = createEventsCardButtonSet();
 	const btnSection = CardService.newCardSection().addWidget(buttonSet);
-  card.addSection(btnSection);
-  
-  const footer = createFooter();
-  card.setFixedFooter(footer);
+	card.addSection(btnSection);
+
+	const footer = createFooter();
+	card.setFixedFooter(footer);
 
 	return card.build();
 }
 
 function createEventsCardButtonSet() {
 	const textToCallback = {
-		'Clear events': 'clearClickedEventIds',
-		'Move events': 'moveClickedEvents',
+		'Clear': 'clearClickedEventIds',
+		'Move': 'moveClickedEvents',
 	};
 
 	// create button set
