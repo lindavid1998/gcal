@@ -26,7 +26,8 @@ function onHomepage(e) {
 	const input = CardService.newTextInput()
 		.setFieldName('duration')
 		.setTitle('Enter duration in minutes')
-		.setHint('Hint')
+		.setHint('Default is 30 minutes')
+		.setValue('30')
 		.setValidation(validation);
 
 	const section = CardService.newCardSection()
