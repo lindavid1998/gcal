@@ -11,16 +11,33 @@ const CALENDAR_ID = 'primary';
  */
 function onHomepage(e) {
 	console.log(e);
-	const message = 'Instructions: Click on event to move by 30 minutes';
+	const message =
+		'Instructions: Set duration below. Then click on event to move';
 
 	const cardHeader = CardService.newCardHeader()
 		.setTitle('Homepage')
 		.setSubtitle(message);
-	
+
+	// add card body with text input
+	const validation = CardService.newValidation().setInputType(
+		CardService.InputType.INTEGER
+	);
+
+	const input = CardService.newTextInput()
+		.setFieldName('duration')
+		.setTitle('Enter duration in minutes')
+		.setHint('Hint')
+		.setValidation(validation);
+
+	const section = CardService.newCardSection()
+		.setHeader('Section header')
+		.addWidget(input);
+
 	const footer = createFooter();
 
 	const card = CardService.newCardBuilder()
 		.setHeader(cardHeader)
+		.addSection(section)
 		.setFixedFooter(footer);
 
 	return card.build();
