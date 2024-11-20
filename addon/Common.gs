@@ -11,7 +11,7 @@ const CALENDAR_ID = 'primary';
  */
 function onHomepage(e) {
 	console.log(e);
-	const message = 'Add instructions here';
+	const message = 'Instructions: Click on event to move by 30 minutes';
 
 	const cardHeader = CardService.newCardHeader()
 		.setTitle('Homepage')

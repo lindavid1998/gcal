@@ -4,68 +4,42 @@
  * @return {CardService.Card} The card to show to the user.
  */
 function onCalendarEventOpen(e) {
-	var calendar = CalendarApp.getCalendarById(e.calendar.calendarId);
-	addToClickedEventIds(e.calendar.id);
-
-	return createEventsCard();
-}
-
-/**
- * Get array of clicked event IDs
- * @return {Array}
- */
-function getClickedEventIds() {
-	var eventIds = userProperties.getProperty('clickedEventIds');
-	return eventIds ? JSON.parse(eventIds) : [];
-}
-
-/**
- * Add eventId to array of clicked event IDs
- * @param {string} eventId The event ID.
- * @return None
- */
-function addToClickedEventIds(eventId) {
-	var currentIds = getClickedEventIds();
-
-	if (!currentIds.includes(eventId)) {
-		currentIds.push(eventId);
+	const calendarId = e.calendar.calendarId;
+	const eventId = e.calendar.id;
+	if (!eventId) {
+		return;
 	}
-	userProperties.setProperty('clickedEventIds', JSON.stringify(currentIds));
+	const minutes = 30;
+
+	return moveEvent(eventId, minutes, calendarId);
 }
 
-function clearClickedEventIds() {
-	userProperties.deleteProperty('clickedEventIds');
-}
-
-function moveClickedEvents() {
-	const minutes = Number(userProperties.getProperty('minutesToShift'));
-	var eventIds = getClickedEventIds();
-
-	for (const eventId of eventIds) {
-		try {
-			const [start, end] = getStartEnd(eventId, CALENDAR_ID);
-
-			const eventPatch = {
-				start: {
-					dateTime: shiftDateTime(start, minutes),
-				},
-				end: {
-					dateTime: shiftDateTime(end, minutes),
-				},
-			};
-
-			const response = Calendar.Events.patch(eventPatch, CALENDAR_ID, eventId);
-			console.log(response);
-		} catch (error) {
-			console.error(error);
-			const statusCard = createStatusCard(
-				`Error ${error.details.code}: ${error.details.message}`
-			);
-			return addCardToStack(statusCard);
-		}
+function moveEvent(eventId, minutes, calendarId) {
+	if (typeof minutes != Number) {
+		minutes = Number(minutes);
 	}
 
-	clearClickedEventIds();
+	try {
+		const [start, end] = getStartEnd(eventId, calendarId);
+
+		const eventPatch = {
+			start: {
+				dateTime: shiftDateTime(start, minutes),
+			},
+			end: {
+				dateTime: shiftDateTime(end, minutes),
+			},
+		};
+
+		const response = Calendar.Events.patch(eventPatch, CALENDAR_ID, eventId);
+		console.log(response);
+	} catch (error) {
+		console.error(error);
+		const statusCard = createStatusCard(
+			`Error ${error.details.code}: ${error.details.message}`
+		);
+		return addCardToStack(statusCard);
+	}
 
 	const statusCard = createStatusCard('Success');
 	return addCardToStack(statusCard);

@@ -57,8 +57,8 @@ function createEventsCard() {
 
 function createEventsCardButtonSet() {
 	const textToCallback = {
-		'Clear': 'clearClickedEventIds',
-		'Move': 'moveClickedEvents',
+		Clear: 'clearClickedEventIds',
+		Move: 'moveClickedEvents',
 	};
 
 	// create button set
