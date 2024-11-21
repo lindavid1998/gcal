@@ -17,6 +17,9 @@ function onCalendarEventOpen(e) {
 }
 
 function moveEvent(eventId, minutes, calendarId) {
+	let status;
+	let message;
+
 	if (typeof minutes != Number) {
 		minutes = Number(minutes);
 	}
@@ -34,17 +37,16 @@ function moveEvent(eventId, minutes, calendarId) {
 		};
 
 		const response = Calendar.Events.patch(eventPatch, CALENDAR_ID, eventId);
+		status = 'SUCCESS';
+		message =
+			'Event successfully moved. Page may need to be reloaded to see changes.';
 		console.log(response);
 	} catch (error) {
 		console.error(error);
-		const statusCard = createStatusCard(
-			`Error ${error.details.code}: ${error.details.message}`
-		);
-		return addCardToStack(statusCard);
+		status = 'ERROR';
+		message = `${error.details.code}: ${error.details.message}`;
 	}
 
-	const statusCard = createStatusCard(
-		'Success. Page may need to be reloaded to see the changes.'
-	);
+	const statusCard = createStatusCard(status, message);
 	return addCardToStack(statusCard);
 }
