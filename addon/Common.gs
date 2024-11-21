@@ -1,7 +1,6 @@
 const { DateTime, Duration } = Luxon; // import the Luxon library
 
 var userProperties = PropertiesService.getUserProperties();
-// userProperties.setProperty('duration', '30');
 
 const CALENDAR_ID = 'primary';
 
@@ -42,7 +41,6 @@ function onHomepage(e) {
 		.setValidation(validation);
 
 	const section = CardService.newCardSection()
-		// .setHeader('Section header')
 		.addWidget(input)
 		.addWidget(button);
 
@@ -56,6 +54,11 @@ function onHomepage(e) {
 	return card.build();
 }
 
+/**
+ * Updates duration property with form data and reloads the root card
+ * @param e - event
+ * @returns {CardService.ActionResponse}
+ */
 function setDuration(e) {
 	const minutes = e.formInput.duration;
 	userProperties.setProperty('duration', minutes);
