@@ -29,3 +29,17 @@ const getStartEnd = (eventId, calendarId) => {
 		console.log(error);
 	}
 };
+
+const getEventData = (eventId, calendarId) => {
+	try {
+		const response = Calendar.Events.get(calendarId, eventId);
+
+		const start = response.start.dateTime;
+		const end = response.end.dateTime;
+		const title = response.summary;
+
+		return { start, end, title}
+	} catch (error) {
+		console.log(error);
+	}
+};
