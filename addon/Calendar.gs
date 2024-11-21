@@ -4,12 +4,14 @@
  * @return {CardService.Card} The card to show to the user.
  */
 function onCalendarEventOpen(e) {
+	console.log(e);
 	const calendarId = e.calendar.calendarId;
 	const eventId = e.calendar.id;
 	if (!eventId) {
 		return;
 	}
-	const minutes = 30;
+	const minutes = userProperties.getProperty('duration');
+	console.log('Moving event by', minutes);
 
 	return moveEvent(eventId, minutes, calendarId);
 }
@@ -41,6 +43,8 @@ function moveEvent(eventId, minutes, calendarId) {
 		return addCardToStack(statusCard);
 	}
 
-	const statusCard = createStatusCard('Success');
+	const statusCard = createStatusCard(
+		'Success. Page may need to be reloaded to see the changes.'
+	);
 	return addCardToStack(statusCard);
 }
