@@ -25,7 +25,7 @@ function moveEvent(eventId, minutes, calendarId) {
 	}
 
 	try {
-		const [start, end] = getStartEnd(eventId, calendarId);
+		const { start, end, title } = getEventData(eventId, calendarId);
 
 		const eventPatch = {
 			start: {
@@ -36,15 +36,14 @@ function moveEvent(eventId, minutes, calendarId) {
 			},
 		};
 
-		const response = Calendar.Events.patch(eventPatch, CALENDAR_ID, eventId);
+		const response = Calendar.Events.patch(eventPatch, calendarId, eventId);
 		status = 'SUCCESS';
-		message =
-			'Event successfully moved. Page may need to be reloaded to see changes.';
+		message = `Event [${title}] successfully moved. Page may need to be reloaded to see changes.`;
 		console.log(response);
 	} catch (error) {
 		console.error(error);
 		status = 'ERROR';
-		message = `${error.details.code}: ${error.details.message}`;
+		message = `Failed to move [${title}]. ${error.details.code}: ${error.details.message}`;
 	}
 
 	const statusCard = createStatusCard(status, message);
