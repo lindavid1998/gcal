@@ -17,7 +17,8 @@ function onHomepage(e) {
 
 	const message = `In the text box below, set the desired duration
 		to shift events by and click Save. Enter whole minutes only. Negative
-		values are permitted and will move events back.`;
+		values are permitted and will move events back. When ready, click on
+		the events in calendar to move`;
 
 	const cardHeader = CardService.newCardHeader()
 		.setTitle('Instructions')
@@ -37,7 +38,7 @@ function onHomepage(e) {
 		.setFieldName('duration')
 		.setTitle('Duration (Units: minutes)')
 		.setHint(`Current setting: ${userProperties.getProperty('duration')}`)
-		.setValue('30')
+		.setValue(userProperties.getProperty('duration'))
 		.setValidation(validation);
 
 	const section = CardService.newCardSection()
