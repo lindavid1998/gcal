@@ -7,8 +7,10 @@ function onCalendarEventOpen(e) {
 	console.log(e);
 	const calendarId = e.calendar.calendarId;
 	const eventId = e.calendar.id;
-	if (!eventId) {
-		return;
+	const calendar = CalendarApp.getCalendarById(calendarId);
+	const event = calendar.getEventById(eventId);
+	if (!event) {
+		return createStatusCard('No action', 'Cannot move event that has not been created yet');
 	}
 	const minutes = userProperties.getProperty('duration');
 	console.log('Moving event by', minutes);

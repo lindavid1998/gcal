@@ -38,7 +38,7 @@ const getEventData = (eventId, calendarId) => {
 		const end = response.end.dateTime;
 		const title = response.summary;
 
-		return { start, end, title}
+		return { start, end, title };
 	} catch (error) {
 		console.log(error);
 	}
