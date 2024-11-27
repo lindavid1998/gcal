@@ -4,15 +4,18 @@
  * @returns {CardService.Card} The card to show to the user.
  */
 function createStatusCard(status, message) {
-	const cardHeader = CardService.newCardHeader().setTitle(status);
-
 	const section = CardService.newCardSection();
+
+	const styledTitle = CardService.newTextParagraph().setText(
+		`<b>${status}</b>`
+	);
+	section.addWidget(styledTitle);
+
 	const text = CardService.newTextParagraph().setText(message);
 	section.addWidget(text);
 
 	const footer = createFooter();
 	const card = CardService.newCardBuilder()
-		.setHeader(cardHeader)
 		.addSection(section)
 		.setFixedFooter(footer);
 

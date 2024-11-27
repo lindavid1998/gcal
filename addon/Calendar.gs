@@ -10,7 +10,7 @@ function onCalendarEventOpen(e) {
 	const calendar = CalendarApp.getCalendarById(calendarId);
 	const event = calendar.getEventById(eventId);
 	if (!event) {
-		return createStatusCard('No action', 'Cannot move event that has not been created yet');
+		return createStatusCard('No action taken', 'Cannot move event that has not been created yet');
 	}
 	const minutes = userProperties.getProperty('duration');
 	console.log('Moving event by', minutes);
@@ -30,7 +30,7 @@ function moveEvent(eventId, minutes, calendarId) {
 		const { start, end, title } = getEventData(eventId, calendarId);
 
 		if (!start || !end) {
-			status = 'No action';
+			status = 'No action taken';
 			message = `Cannot move all-day events`;
 			const statusCard = createStatusCard(status, message);
 			return addCardToStack(statusCard);
@@ -47,12 +47,12 @@ function moveEvent(eventId, minutes, calendarId) {
 
 		const response = Calendar.Events.patch(eventPatch, calendarId, eventId);
 		status = 'SUCCESS';
-		message = `Event [${title}] successfully moved. Page may need to be reloaded to see changes.`;
+		message = `Moved event: <b>${title}</b>. Page may need to be reloaded to see changes.`;
 		console.log(response);
 	} catch (error) {
 		console.error(error);
 		status = 'ERROR';
-		message = `Failed to move [${title}]. ${error.details.code}: ${error.details.message}`;
+		message = `Failed to move <b>${title}</b>. ${error.details.code}: ${error.details.message}`;
 	}
 
 	const statusCard = createStatusCard(status, message);
