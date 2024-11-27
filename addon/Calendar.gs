@@ -29,6 +29,13 @@ function moveEvent(eventId, minutes, calendarId) {
 	try {
 		const { start, end, title } = getEventData(eventId, calendarId);
 
+		if (!start || !end) {
+			status = 'No action';
+			message = `Cannot move all-day events`;
+			const statusCard = createStatusCard(status, message);
+			return addCardToStack(statusCard);
+		}
+
 		const eventPatch = {
 			start: {
 				dateTime: shiftDateTime(start, minutes),
